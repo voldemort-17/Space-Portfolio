@@ -8,7 +8,7 @@ const projects = [
         description: 'I developed a modern and responsive personal portfolio website using React.js and Tailwind CSS to highlight my skills, projects, and professional experience. The site features a clean UI, reusable components, smooth interactions, and a functional contact form with email integration for seamless communication and collaboration opportunities.',
         tags: ["React", "TailwindCSS", "formspree", "HTML", "Javascript"],
         image: '/Portfolio.png',
-        demoUrl: "https://chat-app-frontend-nit5.onrender.com/auth",
+        demoUrl: "",
         githubUrl: "https://github.com/voldemort-17/Space-Portfolio"
     },
     {
@@ -26,8 +26,8 @@ const projects = [
         description: 'A front-end clone of the Gemini chat experience built with React and Tailwind CSS. It includes prompt input, conversation history, markdown/code rendering, loading states, dark mode, and keyboard shortcuts—clean, responsive, and API-agnostic so it can plug into any LLM backend later.',
         tags: ["React", "TailwindCSS", "Gemini", "Node.js", "AI", "Javascript"],
         image: '/Gemini_Clone.png',
-        demoUrl: "https://geminidevclone.netlify.app/",
-        githubUrl: "https://github.com/voldemort-17/GeminiClone_React"
+        demoUrl: "https://gemini-clone-ys.netlify.app/",
+        githubUrl: "https://github.com/voldemort-17/Gemini-Clone"
     }
 ]
 
