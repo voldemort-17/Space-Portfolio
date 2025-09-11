@@ -8,13 +8,11 @@ import SkillsSection from '../components/SkillsSection'
 import ProjectsSection from '../components/ProjectsSection'
 import ContactSection from '../components/ContactSection'
 import Footer from '../components/Footer'
+import WorkSection from '../components/WorkSection'
 
 const Home = () => {
   return (
     <div className='min-h-screen text-foreground bg-background overflow-x-hidden'>
-      {/* THEME COMPONENT  */}
-      <ThemeToggle />
-
       {/* BACKGROUND EFFECTS  */}
       <StarBackground />
 
@@ -27,6 +25,7 @@ const Home = () => {
         <AboutMe />
         <SkillsSection/>
         <ProjectsSection/>
+        <WorkSection/>
         <ContactSection/>
       </main>
       <Footer/>

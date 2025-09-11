@@ -1,38 +1,42 @@
-import { Moon, Sun } from 'lucide-react'
 import React, { useEffect, useState } from 'react'
+import { Moon, Sun } from 'lucide-react'
 import { cn } from '../lib/utils'
 
-const ThemeToggle = () => {
-    const [isDarkMode, setIsDarkMode] = useState(false);
+const ThemeToggle = ({ className, size = 20 }) => {
+  const [isDarkMode, setIsDarkMode] = useState(false)
 
-    useEffect(() => {
-        const storedTheme = localStorage.getItem("Theme");
-        if (storedTheme === "dark") {
-            setIsDarkMode(true);
-            document.documentElement.classList.add('dark');
-        } else {
-            setIsDarkMode(false);
-            document.documentElement.classList.remove('dark');
-        }
-    }, [])
-
-    const toggleTheme = () => {
-        if (isDarkMode) {
-            document.documentElement.classList.remove('dark');
-            localStorage.setItem("Theme", "light");
-        } else {
-            document.documentElement.classList.add('dark')
-            localStorage.setItem("Theme", "dark");
-        }
-        setIsDarkMode(!isDarkMode)
+  useEffect(() => {
+    const stored = localStorage.getItem('Theme')
+    if (stored) {
+      const dark = stored === 'dark'
+      setIsDarkMode(dark)
+      document.documentElement.classList.toggle('dark', dark)
+    } else {
+      const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches
+      setIsDarkMode(prefersDark)
+      document.documentElement.classList.toggle('dark', prefersDark)
     }
-    return (
-        <>
-            <button onClick={toggleTheme} className={cn("fixed max-sm:hidden z-50 transition-colors duration-300 top-5 right-5 p-2 rounded-full focus:outline-hidden cursor-pointer")}>
-                {isDarkMode ? <Sun className='h-6 w-6 text-yellow-300' /> : <Moon className='h-6 w-6 text-blue-900' />}
-            </button>
-        </>
-    )
+  }, [])
+
+  const toggleTheme = () => {
+    const next = !isDarkMode
+    setIsDarkMode(next)
+    document.documentElement.classList.toggle('dark', next)
+    localStorage.setItem('Theme', next ? 'dark' : 'light')
+  }
+
+  return (
+    <button
+      onClick={toggleTheme}
+      aria-label="Toggle theme"
+      className={cn(
+        'p-2 rounded-full transition-colors hover:bg-muted focus:outline-none focus:ring-2 focus:ring-primary/40',
+        className
+      )}
+    >
+      {isDarkMode ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
+    </button>
+  )
 }
 
 export default ThemeToggle
