@@ -1,40 +1,35 @@
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Moon, Sun } from 'lucide-react'
 import { cn } from '../lib/utils'
 
-const ThemeToggle = ({ className, size = 20 }) => {
-  const [isDarkMode, setIsDarkMode] = useState(false)
+const ThemeToggle = ({ className }) => {
+  const [isDarkMode, setIsDarkMode] = useState(() => document.documentElement.classList.contains('dark'))
 
   useEffect(() => {
-    const stored = localStorage.getItem('Theme')
-    if (stored) {
-      const dark = stored === 'dark'
-      setIsDarkMode(dark)
-      document.documentElement.classList.toggle('dark', dark)
-    } else {
-      const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches
-      setIsDarkMode(prefersDark)
-      document.documentElement.classList.toggle('dark', prefersDark)
-    }
+    const storedTheme = localStorage.getItem('theme') || localStorage.getItem('Theme')
+    const prefersDark = window.matchMedia?.('(prefers-color-scheme: dark)').matches
+    const shouldUseDark = storedTheme ? storedTheme === 'dark' : prefersDark
+    setIsDarkMode(shouldUseDark)
+    document.documentElement.classList.toggle('dark', shouldUseDark)
+    localStorage.removeItem('Theme')
   }, [])
 
   const toggleTheme = () => {
-    const next = !isDarkMode
-    setIsDarkMode(next)
-    document.documentElement.classList.toggle('dark', next)
-    localStorage.setItem('Theme', next ? 'dark' : 'light')
+    const nextMode = !isDarkMode
+    setIsDarkMode(nextMode)
+    document.documentElement.classList.toggle('dark', nextMode)
+    localStorage.setItem('theme', nextMode ? 'dark' : 'light')
   }
 
   return (
     <button
+      type="button"
       onClick={toggleTheme}
-      aria-label="Toggle theme"
-      className={cn(
-        'p-2 rounded-full transition-colors hover:bg-muted focus:outline-none focus:ring-2 focus:ring-primary/40',
-        className
-      )}
+      aria-label={`Switch to ${isDarkMode ? 'light' : 'dark'} theme`}
+      title={`Switch to ${isDarkMode ? 'light' : 'dark'} theme`}
+      className={cn('grid h-10 w-10 place-items-center rounded-full text-foreground transition hover:bg-secondary', className)}
     >
-      {isDarkMode ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
+      {isDarkMode ? <Sun size={19} /> : <Moon size={19} />}
     </button>
   )
 }

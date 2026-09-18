@@ -3,7 +3,16 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Yash's Portfolio</title>
+    <meta name="theme-color" content="#111226" />
+    <meta name="description" content="Yash Sharma is a full-stack developer building thoughtful, performant web products with React, Node.js, and modern tooling." />
+    <title>Yash Sharma — Full-Stack Developer</title>
+    <script>
+      try {
+        const savedTheme = localStorage.getItem('theme') || localStorage.getItem('Theme')
+        const useDarkTheme = savedTheme ? savedTheme === 'dark' : window.matchMedia('(prefers-color-scheme: dark)').matches
+        document.documentElement.classList.toggle('dark', useDarkTheme)
+      } catch (_) {}
+    </script>
   </head>
   <body>
     <div id="root"></div>

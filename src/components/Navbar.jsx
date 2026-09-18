@@ -1,179 +1,146 @@
-import React, { useEffect, useState } from 'react'
-import { cn } from '../lib/utils'
+import { useEffect, useState } from 'react'
 import { Menu, X } from 'lucide-react'
+import { cn } from '../lib/utils'
 import ThemeToggle from './ThemeToggle'
 
 const navItems = [
   { name: 'Home', href: '#home' },
   { name: 'About', href: '#about' },
+  { name: 'Experience', href: '#work' },
   { name: 'Skills', href: '#skills' },
   { name: 'Projects', href: '#projects' },
-  { name: 'Work', href: '#work' },
   { name: 'Contact', href: '#contact' },
 ]
 
 const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false)
   const [isMenuOpen, setIsMenuOpen] = useState(false)
-  const [activeTab, setActiveTab] = useState('Home')
+  const [activeSection, setActiveSection] = useState('home')
 
-  // Track scroll
   useEffect(() => {
-    const handleScroll = () => setIsScrolled(window.scrollY > 10)
+    const handleScroll = () => setIsScrolled(window.scrollY > 24)
+    handleScroll()
     window.addEventListener('scroll', handleScroll, { passive: true })
     return () => window.removeEventListener('scroll', handleScroll)
   }, [])
 
-  // Lock scroll when menu is open
   useEffect(() => {
-    const root = document.documentElement
-    if (isMenuOpen) {
-      const scrollBarWidth = window.innerWidth - root.clientWidth
-      root.style.overflow = 'hidden'
-      // Prevent content shift when scrollbar disappears (mainly desktop, but harmless on mobile)
-      if (scrollBarWidth > 0) root.style.paddingRight = `${scrollBarWidth}px`
-    } else {
-      root.style.overflow = ''
-      root.style.paddingRight = ''
+    const sections = navItems
+      .map((item) => document.querySelector(item.href))
+      .filter(Boolean)
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const visible = entries
+          .filter((entry) => entry.isIntersecting)
+          .sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0]
+        if (visible) setActiveSection(visible.target.id)
+      },
+      { rootMargin: '-28% 0px -60% 0px', threshold: [0.05, 0.2, 0.5] },
+    )
+    sections.forEach((section) => observer.observe(section))
+    return () => observer.disconnect()
+  }, [])
+
+  useEffect(() => {
+    document.body.style.overflow = isMenuOpen ? 'hidden' : ''
+    const closeOnEscape = (event) => {
+      if (event.key === 'Escape') setIsMenuOpen(false)
     }
+    window.addEventListener('keydown', closeOnEscape)
     return () => {
-      root.style.overflow = ''
-      root.style.paddingRight = ''
+      document.body.style.overflow = ''
+      window.removeEventListener('keydown', closeOnEscape)
     }
   }, [isMenuOpen])
 
-  const showNavChrome = isScrolled || isMenuOpen // keep stable styles during menu open
+  const handleNavClick = (href) => {
+    setActiveSection(href.slice(1))
+    setIsMenuOpen(false)
+  }
 
   return (
-    <>
+    <header className="fixed inset-x-0 top-0 z-50 px-3 pt-3 sm:px-5">
       <nav
+        aria-label="Primary navigation"
         className={cn(
-          'fixed inset-x-0 top-0 z-40 transition-all duration-300 py-5',
-          showNavChrome && 'backdrop-blur-md shadow-sm bg-background/80'
+          'mx-auto max-w-6xl rounded-2xl border border-transparent px-4 transition-all duration-300 sm:px-5',
+          (isScrolled || isMenuOpen) &&
+            'border-border/70 bg-background/85 shadow-[0_10px_40px_hsl(230_30%_10%/0.08)] backdrop-blur-xl',
         )}
       >
-        <div className="container mx-auto px-4">
-          <div className="flex items-center justify-between gap-4">
-            <a href="#home" className="flex items-center font-bold text-xl text-primary">
-              <span className="relative z-10">
-                <span className="text-glow text-foreground">Yash</span>{' '}Portfolio
-              </span>
-            </a>
+        <div className="flex h-16 items-center justify-between gap-4">
+          <a href="#home" onClick={() => handleNavClick('#home')} className="group flex items-center gap-2.5">
+            <span className="grid h-9 w-9 place-items-center rounded-xl bg-primary text-sm font-black text-primary-foreground shadow-lg shadow-primary/20 transition group-hover:-rotate-3">
+              YS
+            </span>
+            <span className="font-bold tracking-tight">Yash Sharma</span>
+          </a>
 
-            {/* Middle: Desktop Nav */}
-            <div className="hidden md:flex items-center justify-center">
-              <div className="flex space-x-8">
-                {navItems.map((item) => (
+          <div className="hidden items-center gap-1 lg:flex">
+            {navItems.map((item) => {
+              const id = item.href.slice(1)
+              return (
+                <a
+                  key={item.name}
+                  href={item.href}
+                  onClick={() => handleNavClick(item.href)}
+                  aria-current={activeSection === id ? 'location' : undefined}
+                  className={cn(
+                    'rounded-full px-3 py-2 text-sm font-medium text-muted-foreground transition hover:bg-secondary hover:text-foreground',
+                    activeSection === id && 'bg-primary/10 text-primary',
+                  )}
+                >
+                  {item.name}
+                </a>
+              )
+            })}
+          </div>
+
+          <div className="flex items-center gap-1">
+            <ThemeToggle />
+            <button
+              type="button"
+              onClick={() => setIsMenuOpen((open) => !open)}
+              className="grid h-10 w-10 place-items-center rounded-full text-foreground transition hover:bg-secondary lg:hidden"
+              aria-label={isMenuOpen ? 'Close navigation menu' : 'Open navigation menu'}
+              aria-expanded={isMenuOpen}
+              aria-controls="mobile-navigation"
+            >
+              {isMenuOpen ? <X size={21} /> : <Menu size={21} />}
+            </button>
+          </div>
+        </div>
+
+        <div
+          id="mobile-navigation"
+          className={cn(
+            'grid overflow-hidden transition-[grid-template-rows,opacity] duration-300 lg:hidden',
+            isMenuOpen ? 'grid-rows-[1fr] pb-4 opacity-100' : 'grid-rows-[0fr] opacity-0',
+          )}
+        >
+          <div className="min-h-0">
+            <div className="grid gap-1 border-t border-border/70 pt-3">
+              {navItems.map((item) => {
+                const id = item.href.slice(1)
+                return (
                   <a
                     key={item.name}
                     href={item.href}
-                    onClick={() => setActiveTab(item.name)}
-                    aria-current={activeTab === item.name ? 'page' : undefined}
+                    onClick={() => handleNavClick(item.href)}
                     className={cn(
-                      'text-foreground hover:text-primary text-lg font-medium transition-colors duration-300',
-                      activeTab === item.name && 'text-primary'
+                      'rounded-xl px-4 py-3 text-left text-sm font-medium text-muted-foreground transition hover:bg-secondary hover:text-foreground',
+                      activeSection === id && 'bg-primary/10 text-primary',
                     )}
                   >
                     {item.name}
                   </a>
-                ))}
-              </div>
-            </div>
-
-            {/* Right: Desktop theme + Mobile hamburger */}
-            <div className="flex items-center gap-2">
-              <div className="hidden md:block">
-                <ThemeToggle />
-              </div>
-              <button
-                onClick={() => setIsMenuOpen((prev) => !prev)}
-                className="md:hidden p-2 text-foreground"
-                aria-label={isMenuOpen ? 'Close Menu' : 'Open Menu'}
-              >
-                {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
-              </button>
+                )
+              })}
             </div>
           </div>
         </div>
       </nav>
-
-      {/* Mobile Menu (mount/unmount for smoother first frame) */}
-      {isMenuOpen && (
-        <div className="fixed inset-0 z-50 md:hidden">
-          {/* Backdrop */}
-          <div
-            className={cn(
-              'absolute inset-0 bg-background/95 backdrop-blur-md',
-              'animate-[fadeIn_200ms_ease-out]'
-            )}
-          />
-          {/* Panel */}
-          <div
-            className={cn(
-              'relative z-10 h-full flex flex-col',
-              'animate-[slideIn_220ms_ease-out]'
-            )}
-          >
-            {/* Top row in menu: Title · Theme · Close */}
-            <div className="flex items-center justify-between px-6 py-4">
-              <a
-                href="#home"
-                onClick={() => {
-                  setActiveTab('Home')
-                  setIsMenuOpen(false)
-                }}
-                className="font-semibold text-lg text-primary"
-              >
-                Yash Portfolio
-              </a>
-
-              <div className="flex items-center gap-2">
-                <ThemeToggle />
-                <button
-                  onClick={() => setIsMenuOpen(false)}
-                  className="p-2 text-foreground"
-                  aria-label="Close Menu"
-                >
-                  <X size={22} />
-                </button>
-              </div>
-            </div>
-
-            {/* Centered links */}
-            <div className="flex-1 flex flex-col items-center justify-center gap-8 text-xl">
-              {navItems.map((item) => (
-                <a
-                  key={item.name}
-                  href={item.href}
-                  className={cn(
-                    'text-foreground hover:text-primary transition-colors duration-300',
-                    activeTab === item.name && 'text-primary'
-                  )}
-                  onClick={() => {
-                    setActiveTab(item.name)
-                    setIsMenuOpen(false)
-                  }}
-                >
-                  {item.name}
-                </a>
-              ))}
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* Spacer to avoid content hiding behind fixed nav */}
-      <div className={showNavChrome ? 'h-16' : 'h-20'} />
-      
-      {/* Tailwind keyframes (can go in globals.css) */}
-      <style jsx global>{`
-        @keyframes fadeIn { from { opacity: 0 } to { opacity: 1 } }
-        @keyframes slideIn { 
-          from { opacity: 0; transform: translateY(-4px) } 
-          to { opacity: 1; transform: translateY(0) } 
-        }
-      `}</style>
-    </>
+    </header>
   )
 }
 

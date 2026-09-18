@@ -1,68 +1,58 @@
-import { Briefcase, Code, User } from 'lucide-react'
-import React from 'react'
+import { ArrowUpRight, Code2, Layers3, Lightbulb, Users } from 'lucide-react'
 
-const AboutMe = () => {
-    return (
-        <>
-            <section id='about' className='relative py-24 px-4'>
-                <div className='container max-w-5xl m-auto'>
-                    <h2 className='font-bold mb-12 text-3xl md:text-4xl text-center'>
-                        About <span className='text-primary'>Me</span>
-                    </h2>
+const strengths = [
+  { icon: Code2, title: 'End-to-end engineering', text: 'From accessible interfaces to dependable APIs, I build across the stack with one consistent product goal.' },
+  { icon: Lightbulb, title: 'Practical problem solving', text: 'I turn fuzzy requirements into clear flows, reusable systems, and solutions that are easy to maintain.' },
+  { icon: Users, title: 'Collaborative delivery', text: 'I communicate early, iterate with feedback, and keep technical decisions connected to real user needs.' },
+]
 
-                    <div className='grid grid-cols-1 md:grid-cols-2 gap-12 items-center'>
-                        <div className='space-y-6'>
-                            <h3 className='text-2xl font-semibold'>Full-Stack Developer & Creative Builder</h3>
+const AboutMe = () => (
+  <section id="about" className="relative py-24 sm:py-32">
+    <div className="container mx-auto max-w-6xl">
+      <div className="grid items-start gap-12 lg:grid-cols-[0.85fr_1.15fr] lg:gap-16">
+        <div className="lg:sticky lg:top-28">
+          <span className="eyebrow"><Layers3 size={14} /> About me</span>
+          <h2 className="section-title mt-5">Engineering with <span className="text-gradient">curiosity and care.</span></h2>
+          <p className="mt-6 text-base leading-8 text-muted-foreground sm:text-lg">
+            I’m a full-stack developer with 2+ years of experience creating responsive applications, workflow automations, and AI-assisted experiences.
+          </p>
+          <p className="mt-4 leading-7 text-muted-foreground">
+            I enjoy the space where design and engineering meet: simplifying complex journeys, making interfaces feel effortless, and building the systems that keep them reliable.
+          </p>
+          <div className="mt-8 flex flex-wrap gap-3">
+            <a href="#contact" className="cosmic-button">Start a conversation</a>
+            <a
+              href="https://drive.google.com/file/d/1iaFfRZvbAH5AliCLoJ_hidWWJysK8Iy8/view?usp=drive_link"
+              target="_blank"
+              rel="noreferrer"
+              className="secondary-button"
+            >
+              View résumé <ArrowUpRight size={16} />
+            </a>
+          </div>
+        </div>
 
-                            <p>With over 1 year of experience in Full Stack Development, I specialize in developing scalable, responsive and interactive applications using modern technologies.</p>
-
-                            <p>I thrive on transforming ideas into interactive, real-world applications. From designing smooth user interfaces to engineering reliable back-end systems, I enjoy working across the entire stack to bring projects to life. My focus is on writing clean, efficient code and creating products that not only work well but feel great to use.</p>
-
-                            <div className='flex flex-col sm:flex-row gap-4 pt-4 justify-center'>
-                                <a href="#contact" className='cosmic-button'>Connect Now !</a>
-                                <a href="https://drive.google.com/file/d/1iaFfRZvbAH5AliCLoJ_hidWWJysK8Iy8/view?usp=drive_link" target='_blank' className='px-6 py-2 text-primary border border-primary hover:bg-primary/10 rounded-full duration-300 transition-colors'>Download CV</a>
-                            </div>
-                        </div>
-                        <div className='grid grid-cols-1 gap-6'>
-                            <div className='card-hover p-6 gradient-border'>
-                                <div className='flex items-start gap-4'>
-                                    <div className='p-3 rounded-full bg-primary/10'>
-                                        <Code className='h-6 w-6 text-primary' />
-                                    </div>
-                                    <div className='text-left'>
-                                        <h4 className='text-lg font-semibold'>Full Stack Development</h4>
-                                        <p>Creating seamless digital experiences by bridging design and development across the full stack.</p>
-                                    </div>
-                                </div>
-                            </div>
-                            <div className='card-hover p-6 gradient-border'>
-                                <div className='flex items-start gap-4'>
-                                    <div className='p-3 rounded-full bg-primary/10'>
-                                        <User className='h-6 w-6 text-primary' />
-                                    </div>
-                                    <div className='text-left'>
-                                        <h4 className='text-lg font-semibold'>UI/UX Design</h4>
-                                        <p>Passionate about turning complex ideas into simple, beautiful designs..</p>
-                                    </div>
-                                </div>
-                            </div>
-                            <div className='card-hover p-6 gradient-border'>
-                                <div className='flex items-start gap-4'>
-                                    <div className='p-3 rounded-full bg-primary/10'>
-                                        <Briefcase className='h-6 w-6 text-primary' />
-                                    </div>
-                                    <div className='text-left'>
-                                        <h4 className='text-lg font-semibold'>Project Development</h4>
-                                        <p>Turning ideas into polished solutions through clear planning, efficient execution, and continuous iteration.</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+        <div className="grid gap-4">
+          {strengths.map(({ icon: Icon, title, text }, index) => (
+            <article key={title} className="surface-card card-hover group p-6 sm:p-7">
+              <div className="flex items-start gap-5">
+                <div className="grid h-12 w-12 shrink-0 place-items-center rounded-2xl bg-primary/10 text-primary transition group-hover:bg-primary group-hover:text-primary-foreground">
+                  <Icon size={22} />
                 </div>
-            </section>
-        </>
-    )
-}
+                <div>
+                  <div className="flex items-center gap-3">
+                    <span className="font-mono text-xs text-primary">0{index + 1}</span>
+                    <h3 className="text-lg font-bold sm:text-xl">{title}</h3>
+                  </div>
+                  <p className="mt-2 leading-7 text-muted-foreground">{text}</p>
+                </div>
+              </div>
+            </article>
+          ))}
+        </div>
+      </div>
+    </div>
+  </section>
+)
 
 export default AboutMe
